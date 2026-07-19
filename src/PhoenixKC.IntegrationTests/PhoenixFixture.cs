@@ -34,6 +34,12 @@ public sealed class PhoenixFixture : IAsyncLifetime
         HttpClient = Application.CreateHttpClient("phoenix-webapi");
         ConnectionString = await Application.GetConnectionString("phoenix-database") ?? throw new NullReferenceException("ConnectionString is null");
         DbOptions = new DbContextOptionsBuilder<PhoenixDbContext>().UseSqlServer(ConnectionString).Options;
+        await ExecuteAsync(async db =>
+        {
+            Console.WriteLine("Applying migrations...");
+            await db.Database.MigrateAsync();
+            Console.WriteLine("Migrations applied");
+        });
 
         await using SqlConnection connection = new(ConnectionString);
         await connection.OpenAsync();

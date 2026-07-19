@@ -8,4 +8,4 @@ builder.AddViteApp("phoenix-ui", "../../PhoenixKC.UI", "start")
     .WithReference(webapi).WaitFor(webapi)
     .WithHttpEndpoint(env: "PORT")
     .WithExternalHttpEndpoints();
-builder.Build().Run();
+await builder.Build().RunAsync();
