@@ -10,10 +10,10 @@ import { PhoenixClient, ExampleDto } from './api';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export readonly class App {
+export class App {
   examples: ExampleDto[] = [];
 
-  constructor(private phoenixClient: PhoenixClient) {
+  constructor(private readonly phoenixClient: PhoenixClient) {
     phoenixClient.getAllExamples().subscribe({
       next: result => {
         console.log(JSON.stringify(result));
