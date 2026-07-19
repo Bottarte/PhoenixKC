@@ -10,7 +10,7 @@ import { PhoenixClient, ExampleDto } from './api';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export readonly class App {
   examples: ExampleDto[] = [];
 
   constructor(private phoenixClient: PhoenixClient) {
