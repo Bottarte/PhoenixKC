@@ -30,7 +30,7 @@ public sealed class ValidationExceptionHandler(IProblemDetailsService thisProble
             }
             await thisProblemDetails.WriteAsync(new ProblemDetailsContext
             {
-                HttpContext = context,
+                HttpContext = httpContext,
                 ProblemDetails = problem
             });
             return true;
