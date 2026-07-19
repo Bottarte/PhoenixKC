@@ -13,7 +13,7 @@ import { PhoenixClient, ExampleDto } from './api';
 export class App {
   examples: ExampleDto[] = [];
 
-  constructor(private phoenixClient: PhoenixClient) {
+  constructor(private readonly phoenixClient: PhoenixClient) {
     phoenixClient.getAllExamples().subscribe({
       next: result => {
         console.log(JSON.stringify(result));

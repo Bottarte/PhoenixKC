@@ -53,7 +53,7 @@ jobs:
 
       - name: Restore frontend dependencies
         working-directory: src/PhoenixKC.UI
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Build, Test and Analyze
         env:
