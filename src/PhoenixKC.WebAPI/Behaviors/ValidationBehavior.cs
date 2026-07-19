@@ -1,14 +1,16 @@
 ﻿using Mediator;
 using FluentValidation;
 using FluentValidation.Results;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PhoenixKC.WebAPI.Behaviors;
 
+[ExcludeFromCodeCoverage]
 public sealed class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> thisValidators
 ) : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull, IMessage
 {
-    #region IPipelineBehavior
+    #region Interfaces
     public async ValueTask<TResponse> Handle(
         TRequest message,
         MessageHandlerDelegate<TRequest, TResponse> next,

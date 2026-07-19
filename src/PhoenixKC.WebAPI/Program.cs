@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 ValidatorOptions.Global.LanguageManager.Enabled = false;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
 builder.Host.UseSerilog(static void(HostBuilderContext ctx, IServiceProvider provider, LoggerConfiguration cfg) =>
 {
     cfg.WriteTo.Console();
@@ -20,7 +21,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
 builder.Services.AddDbContext<PhoenixDbContext>(options =>
 {
-    string? connection_str = builder.Configuration.GetConnectionString("DefaultConnection");
+    string? connection_str = builder.Configuration.GetConnectionString("phoenix-database"); //Keep sync with AppHost.cs
     ArgumentNullException.ThrowIfNull(connection_str);
     options.UseSqlServer(connection_str, builder =>
     {
@@ -35,6 +36,7 @@ builder.Services.AddMediator(options =>
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 WebApplication app = builder.Build();
+app.MapDefaultEndpoints();
 if(app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

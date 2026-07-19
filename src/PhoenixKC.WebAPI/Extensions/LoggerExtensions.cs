@@ -1,19 +1,16 @@
-﻿using FluentResults;
+﻿using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PhoenixKC.WebAPI.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class LoggerExtensions
 {
-    public static Result LogFailResult<TType>(this ILogger<TType> logger, string messageTemplate, params object?[] args)
+    [DoesNotReturn]
+    public static void LogFailAndThrow<T>(this ILogger<T> logger, string messageTemplate, params object?[] args)
     {
         string formatted_message = string.Format(messageTemplate, args);
         logger.LogError(formatted_message);
-        return Result.Fail(formatted_message);
-    }
-    public static Result<TValue> LogFailResult<TType, TValue>(this ILogger<TType> logger, string messageTemplate, params object?[] args)
-    {
-        string formatted_message = string.Format(messageTemplate, args);
-        logger.LogError(formatted_message);
-        return Result.Fail<TValue>(formatted_message);
+        throw new ValidationException(formatted_message);
     }
 }

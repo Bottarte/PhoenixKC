@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="PhoenixKC.Deploy/PhoenixKC.Deploy.AppHost/PhoenixKC.Deploy.AppHost.csproj" Id="1c909327-e9ba-41cd-bede-d805166d02e4" />
+  <Project Path="PhoenixKC.Deploy/PhoenixKC.Deploy.ServiceDefaults/PhoenixKC.Deploy.ServiceDefaults.csproj" />
   <Project Path="PhoenixKC.Infrastructure/PhoenixKC.Infrastructure.csproj" Id="961a1bda-023d-475f-832f-314583f5b325" />
   <Project Path="PhoenixKC.IntegrationTests/PhoenixKC.IntegrationTests.csproj" Id="c5488697-07f7-4fe6-818e-ea8eb83d3e78" />
   <Project Path="PhoenixKC.UI/PhoenixKC.UI.esproj">
