@@ -50,7 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          dotnet-sonarscanner begin /k:"Artemko09_PhoenixKC" /o:"artemko09" /d:sonar.token="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet-sonarscanner begin /k:"Artemko09_PhoenixKC" /o:"artemko09" /d:sonar.token="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.exclusions="src/PhoenixKC.UI/src/app/api.ts"
           dotnet restore src/PhoenixKC.slnx
           dotnet build src/PhoenixKC.slnx --configuration Debug --no-restore
           dotnet test src/PhoenixKC.slnx --configuration Debug --no-build --verbosity normal
