@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PhoenixKC.Infrastructure.Features.Auth;
-using PhoenixKC.Infrastructure.Features.Health;
+using PhoenixKC.Infrastructure.Features.Example;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace PhoenixKC.Infrastructure;
@@ -11,7 +11,7 @@ public sealed class PhoenixDbContext(
 ) : IdentityDbContext<PhoenixUserEntity, IdentityRole<Guid>, Guid>(options)
 {
     #region Instance
-    public DbSet<HealthEntity> Health { get; set; } = null!; //Init by EFCore
+    public DbSet<ExampleEntity> Examples { get; set; } = null!; //Init by EFCore
     #endregion
 
     #region Base

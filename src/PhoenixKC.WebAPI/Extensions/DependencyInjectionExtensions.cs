@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
 using PhoenixKC.WebAPI.Features;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PhoenixKC.WebAPI.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjectionExtensions
 {
     public static void MapEndpointsFromAssembly(this IEndpointRouteBuilder builder, Assembly? assembly = null)

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { PhoenixClient, ExampleDto } from './api';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,15 @@ import { FooterComponent } from './components/footer/footer.component';
   styleUrl: './app.css'
 })
 export class App {
+  examples: ExampleDto[] = [];
 
+  constructor(private readonly phoenixClient: PhoenixClient) {
+    phoenixClient.getAllExamples().subscribe({
+      next: result => {
+        console.log(JSON.stringify(result));
+        this.examples = result;
+      },
+      error: console.error
+    });
+  }
 }

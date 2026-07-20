@@ -1,0 +1,82 @@
+name: SonarCloud
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'src/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**'
+
+jobs:
+  sonar:
+    name: Build, Test and Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: src/PhoenixKC.UI/package-lock.json
+
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Install Aspire CLI and trust certificates
+        run: |
+          dotnet tool install -g Aspire.Cli
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+          aspire certs clean
+          aspire certs trust
+
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
+      - name: Restore frontend dependencies
+        working-directory: src/PhoenixKC.UI
+        run: npm ci --ignore-scripts
+
+      - name: Build, Test and Analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet-sonarscanner begin \
+            /k:"Artemko09_PhoenixKC" \
+            /o:"artemko09" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.exclusions="**/api.ts" \
+            /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml"
+
+          dotnet restore src/PhoenixKC.slnx
+          dotnet build src/PhoenixKC.slnx --configuration Debug --no-restore
+          dotnet-coverage collect \
+            "dotnet test src/PhoenixKC.slnx --configuration Debug --no-build" \
+            -f xml \
+            -o coverage.xml
+
+          npm --prefix src/PhoenixKC.UI run build
+
+          dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"

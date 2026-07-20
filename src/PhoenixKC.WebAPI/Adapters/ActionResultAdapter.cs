@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace PhoenixKC.WebAPI.Adapters;
 
-public class ActionResultAdapter(IActionResult thisActionResult) : IResult
+[ExcludeFromCodeCoverage]
+public sealed class ActionResultAdapter(IActionResult thisActionResult) : IResult
 {
-    #region IResult
+    #region Interfaces
     public async Task ExecuteAsync(HttpContext httpContext)
     {
         ActionContext action_context = new()

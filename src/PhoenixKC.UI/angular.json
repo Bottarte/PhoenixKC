@@ -75,7 +75,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "port": 59067
+            "proxyConfig": "proxy.conf.js"
           }
         },
         "test": {
