@@ -63,7 +63,6 @@ jobs:
           dotnet-sonarscanner begin \
             /k:"Artemko09_PhoenixKC" \
             /o:"artemko09" \
-            /d:sonar.verbose=true \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.exclusions="**/api.ts" \
@@ -76,3 +75,10 @@ jobs:
           npm --prefix src/PhoenixKC.UI run build
 
           dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            **/coverage.opencover.xml
