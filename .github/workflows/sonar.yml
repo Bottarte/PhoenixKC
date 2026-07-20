@@ -70,9 +70,7 @@ jobs:
 
           dotnet restore src/PhoenixKC.slnx
           dotnet build src/PhoenixKC.slnx --configuration Debug --no-restore
-          dotnet test src/PhoenixKC.slnx --configuration Debug --no-build --verbosity normal \
-            /p:CollectCoverage=true \
-            /p:CoverletOutputFormat=opencover
+          dotnet test src/PhoenixKC.slnx --configuration Debug --no-build --verbosity normal --collect:"XPlat Code Coverage;Format=opencover"
 
           npm --prefix src/PhoenixKC.UI run build
 
