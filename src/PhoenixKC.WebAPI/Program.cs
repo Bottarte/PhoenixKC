@@ -1,56 +1,11 @@
-using Serilog;
-using FluentValidation;
-using PhoenixKC.Infrastructure;
-using PhoenixKC.WebAPI.Behaviors;
-using PhoenixKC.WebAPI.Extensions;
-using PhoenixKC.WebAPI.Middleware;
-using Microsoft.EntityFrameworkCore;
+using PhoenixKC.WebAPI;
 
-ValidatorOptions.Global.LanguageManager.Enabled = false;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
-builder.Host.UseSerilog(static void(HostBuilderContext ctx, IServiceProvider provider, LoggerConfiguration cfg) =>
-{
-    cfg.WriteTo.Console();
-});
-builder.Services.AddMvcCore();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
-builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
-builder.Services.AddDbContext<PhoenixDbContext>(options =>
-{
-    string? connection_str = builder.Configuration.GetConnectionString("phoenix-database"); //Keep sync with AppHost.cs
-    ArgumentNullException.ThrowIfNull(connection_str);
-    options.UseSqlServer(connection_str, builder =>
-    {
-        builder.MigrationsAssembly(typeof(PhoenixDbContext).Assembly.GetName().Name);
-    });
-});
-builder.Services.AddMediator(options =>
-{
-    options.ServiceLifetime = ServiceLifetime.Scoped;
-    options.PipelineBehaviors = [typeof(ValidationBehavior<,>)];
-});
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.AddCore();
 
 WebApplication app = builder.Build();
 app.MapDefaultEndpoints();
-if(app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapSwagger();
-    app.MapSwaggerUI();
-}
-using(IServiceScope scope = app.Services.CreateScope())
-{
-    Console.WriteLine("Applying migrations...");
-    await scope.ServiceProvider.GetRequiredService<PhoenixDbContext>().Database.MigrateAsync();
-    Console.WriteLine("Migrations applied");
-}
-app.UseSerilogRequestLogging();
-app.UseExceptionHandler();
-app.MapEndpointsFromAssembly();
 app.UseHttpsRedirection();
+app.UseCore();
 await app.RunAsync();

@@ -1,6 +1,48 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
 import { App } from './app/app';
+import { provideRouter, Routes } from '@angular/router';
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { API_BASE_URL } from './app/api';
+import { AuthTokenStore } from './app/features/auth/auth.token.store';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './app/features/auth/auth.http.interceptor';
+import { RegisterPage } from './app/pages/register.page/register.page';
+import { LoginPage } from './app/pages/login.page/login.page';
+import { guestGuard } from './app/features/auth/guest.guard';
+import { MainPage } from './app/pages/main.page/main.page';
+import { authGuard } from './app/features/auth/auth.guard';
+import { UserStore } from './app/features/auth/user/user.store';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+const routes: Routes = [
+  {
+    path: "register",
+    component: RegisterPage,
+    canActivate: [guestGuard]
+  },
+  {
+    path: "login",
+    component: LoginPage,
+    canActivate: [guestGuard]
+  },
+  {
+    path: "",
+    component: MainPage,
+    canActivate: [authGuard]
+  }
+];
+const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideAppInitializer(() => inject(AuthTokenStore).restoreToken()),
+    provideAppInitializer(() => inject(UserStore).restoreUser()),
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
+    {
+      provide: API_BASE_URL,
+      useValue: ""
+    }
+  ]
+};
+bootstrapApplication(App, appConfig).catch(console.error);

@@ -1,0 +1,10 @@
+﻿namespace PhoenixKC.Data.Shared.JoinEntities;
+
+public interface IJoinEntity<TSelf, TLeftEntity, TRightEntity> : IEquatable<TSelf> where TSelf : IJoinEntity<TSelf, TLeftEntity, TRightEntity>
+{
+    public abstract Guid LeftId { get; set; }
+    public abstract Guid RightId { get; set; }
+
+    public abstract TLeftEntity? Left { get; set; }
+    public abstract TRightEntity? Right { get; set; }
+}

@@ -1,12 +1,12 @@
 <Solution>
-  <Project Path="PhoenixKC.Deploy/PhoenixKC.Deploy.AppHost/PhoenixKC.Deploy.AppHost.csproj" Id="1c909327-e9ba-41cd-bede-d805166d02e4" />
-  <Project Path="PhoenixKC.Deploy/PhoenixKC.Deploy.ServiceDefaults/PhoenixKC.Deploy.ServiceDefaults.csproj" />
-  <Project Path="PhoenixKC.Infrastructure/PhoenixKC.Infrastructure.csproj" Id="961a1bda-023d-475f-832f-314583f5b325" />
-  <Project Path="PhoenixKC.IntegrationTests/PhoenixKC.IntegrationTests.csproj" Id="c5488697-07f7-4fe6-818e-ea8eb83d3e78" />
+  <Project Path="PhoenixKC.AppHost/PhoenixKC.AppHost.csproj" Id="60d9dfec-d22b-4c0e-b018-82ae391748f2" />
+  <Project Path="PhoenixKC.Data/PhoenixKC.Data.csproj" Id="d3dc3c52-51a1-4572-8223-7f7b6e4a6d61" />
+  <Project Path="PhoenixKC.IntegrationTests/PhoenixKC.IntegrationTests.csproj" Id="1561d211-a55d-4815-9e60-3e7fa197c226" />
+  <Project Path="PhoenixKC.ServiceDefaults/PhoenixKC.ServiceDefaults.csproj" />
   <Project Path="PhoenixKC.UI/PhoenixKC.UI.esproj">
     <Build />
     <Deploy />
   </Project>
-  <Project Path="PhoenixKC.UnitTests/PhoenixKC.UnitTests.csproj" Id="4d244113-f66a-4fb9-b458-2fa4b1668745" />
-  <Project Path="PhoenixKC.WebAPI/PhoenixKC.WebAPI.csproj" Id="1b324d1e-ad98-4dba-8b4c-d8fd078f6736" />
+  <Project Path="PhoenixKC.UnitTests/PhoenixKC.UnitTests.csproj" Id="baccbe41-a89f-4a60-93f6-a9a20ac27c00" />
+  <Project Path="PhoenixKC.WebAPI/PhoenixKC.WebAPI.csproj" />
 </Solution>
