@@ -47,6 +47,7 @@ public sealed class AppFixture : IAsyncLifetime
                 Environment.SetEnvironmentVariable("DOTNET_LAUNCH_PROFILE", WebApiConstants.TestProfile);
                 await Application.StartAsync(TestContext.Current.CancellationToken);
                 HttpClient = Application.CreateHttpClient(AppHostConstants.WebAPI);
+                HttpClient.Timeout = TimeSpan.FromMinutes(10);
                 ConnectionString = await Application.GetConnectionString(AppHostConstants.Database) ?? throw new NullReferenceException("ConnectionString is null");
                 DbOptions = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(ConnectionString).Options;
                 await ExecuteDbContextAsync(async db =>
