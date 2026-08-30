@@ -70,7 +70,7 @@ jobs:
           dotnet restore src/PhoenixKC.slnx
           dotnet build src/PhoenixKC.slnx --configuration Debug --no-restore
           dotnet-coverage collect \
-            "dotnet test src/PhoenixKC.slnx --configuration Debug --no-build --logger \"console;verbosity=detailed\"" \
+            "dotnet test src/PhoenixKC.slnx --configuration Debug --no-build" \
             -f xml \
             -o coverage.xml
 
