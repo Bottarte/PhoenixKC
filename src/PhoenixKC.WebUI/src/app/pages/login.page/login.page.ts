@@ -1,0 +1,51 @@
+import { Component, inject, signal } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../features/auth/auth.service';
+import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { ProblemDetails } from '../../api';
+
+@Component({
+  selector: 'app-login.page',
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './login.page.html',
+  styleUrl: './login.page.css',
+})
+export class LoginPage
+{
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  public readonly loginForm = this.fb.group({
+    email: [
+      '',
+      [Validators.required, Validators.email]
+    ],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$')
+      ]
+    ]
+  });
+  public readonly loading = signal(false);
+  public readonly error = signal<ProblemDetails | undefined>(undefined);
+
+  public onSubmit()
+  {
+    if (this.loginForm.invalid)
+    {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+    const request = this.loginForm.getRawValue();
+    this.loading.set(true);
+    this.authService.loginUser(request).pipe(
+      finalize(() => this.loading.set(false))
+    ).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: err => this.error.set(err.result as ProblemDetails)
+    });
+  }
+}
