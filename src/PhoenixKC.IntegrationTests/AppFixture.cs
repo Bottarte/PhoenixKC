@@ -1,5 +1,4 @@
 ﻿using Respawn;
-using Polly.Timeout;
 using PhoenixKC.Data;
 using PhoenixKC.WebAPI;
 using PhoenixKC.AppHost;
@@ -39,40 +38,29 @@ public sealed class AppFixture : IAsyncLifetime
     #region Interfaces
     public async ValueTask InitializeAsync()
     {
-        while(true)
-        {
-            try
-            {
-                TestContext.Current.CancellationToken.ThrowIfCancellationRequested();
-                Environment.SetEnvironmentVariable("DOTNET_LAUNCH_PROFILE", ProfileNames.Test);
-                await Application.StartAsync(TestContext.Current.CancellationToken);
-                HttpClient = Application.CreateHttpClient(AppHostResources.WebAPI);
-                HttpClient.Timeout = TimeSpan.FromMinutes(5);
-                ConnectionString = await Application.GetConnectionString(AppHostResources.AppDatabase) ?? throw new NullReferenceException("ConnectionString is null");
-                DbOptions = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(ConnectionString).Options;
-                await ExecuteDbContextAsync(async db =>
-                {
-                    await db.Database.MigrateAsync(TestContext.Current.CancellationToken);
-                });
+        TestContext.Current.CancellationToken.ThrowIfCancellationRequested();
+        Environment.SetEnvironmentVariable("DOTNET_LAUNCH_PROFILE", ProfileNames.Test);
+        await Application.StartAsync(TestContext.Current.CancellationToken);
+        HttpClient = Application.CreateHttpClient(AppHostResources.WebAPI);
+        HttpClient.Timeout = TimeSpan.FromMinutes(5);
 
-                await using SqlConnection connection = new(ConnectionString);
-                await connection.OpenAsync();
-                Respawner = await Respawner.CreateAsync(connection, new RespawnerOptions()
-                {
-                    DbAdapter = DbAdapter.SqlServer,
-                    TablesToIgnore = ["__EFMigrationsHistory"]
-                });
-                return;
-            }
-            catch(SqlException)
-            {
-                continue;
-            }
-            catch(TimeoutRejectedException)
-            {
-                continue;
-            }
-        }
+        var response = await HttpClient.GetAsync("/health");
+        Console.WriteLine($"Health: {(int)response.StatusCode}");
+
+        ConnectionString = await Application.GetConnectionString(AppHostResources.AppDatabase) ?? throw new NullReferenceException("ConnectionString is null");
+        DbOptions = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(ConnectionString).Options;
+        await ExecuteDbContextAsync(async db =>
+        {
+            await db.Database.MigrateAsync(TestContext.Current.CancellationToken);
+        });
+
+        await using SqlConnection connection = new(ConnectionString);
+        await connection.OpenAsync();
+        Respawner = await Respawner.CreateAsync(connection, new RespawnerOptions()
+        {
+            DbAdapter = DbAdapter.SqlServer,
+            TablesToIgnore = ["__EFMigrationsHistory"]
+        });
     }
     public async ValueTask DisposeAsync()
     {
