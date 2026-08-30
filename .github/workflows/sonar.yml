@@ -47,13 +47,6 @@ jobs:
       - name: Install SonarScanner
         run: dotnet tool install --global dotnet-sonarscanner
 
-      - name: Install Aspire CLI and trust certificates
-        run: |
-          dotnet tool install -g Aspire.Cli
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-          aspire certs clean
-          aspire certs trust
-
       - name: Install dotnet-coverage
         run: dotnet tool install --global dotnet-coverage
 
