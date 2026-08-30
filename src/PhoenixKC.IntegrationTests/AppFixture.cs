@@ -43,10 +43,6 @@ public sealed class AppFixture : IAsyncLifetime
         await Application.StartAsync(TestContext.Current.CancellationToken);
         HttpClient = Application.CreateHttpClient(AppHostResources.WebAPI);
         HttpClient.Timeout = TimeSpan.FromMinutes(5);
-
-        var response = await HttpClient.GetAsync("/health");
-        Console.WriteLine($"Health: {(int)response.StatusCode}");
-
         ConnectionString = await Application.GetConnectionString(AppHostResources.AppDatabase) ?? throw new NullReferenceException("ConnectionString is null");
         DbOptions = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(ConnectionString).Options;
         await ExecuteDbContextAsync(async db =>
