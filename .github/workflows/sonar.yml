@@ -7,10 +7,14 @@ on:
       - dev
     paths:
       - 'src/**'
+      - '.github/workflows/sonar.yml'
+      - 'global.json'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'src/**'
+      - '.github/workflows/sonar.yml'
+      - 'global.json'
 
 jobs:
   sonar:
@@ -18,18 +22,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'zulu'
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 
@@ -38,23 +42,16 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: src/PhoenixKC.UI/package-lock.json
+          cache-dependency-path: src/PhoenixKC.WebUI/package-lock.json
 
       - name: Install SonarScanner
         run: dotnet tool install --global dotnet-sonarscanner
-
-      - name: Install Aspire CLI and trust certificates
-        run: |
-          dotnet tool install -g Aspire.Cli
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-          aspire certs clean
-          aspire certs trust
 
       - name: Install dotnet-coverage
         run: dotnet tool install --global dotnet-coverage
 
       - name: Restore frontend dependencies
-        working-directory: src/PhoenixKC.UI
+        working-directory: src/PhoenixKC.WebUI
         run: npm ci --ignore-scripts
 
       - name: Build, Test and Analyze
@@ -77,6 +74,6 @@ jobs:
             -f xml \
             -o coverage.xml
 
-          npm --prefix src/PhoenixKC.UI run build
+          npm --prefix src/PhoenixKC.WebUI run build
 
           dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
